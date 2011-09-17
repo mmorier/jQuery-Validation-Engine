@@ -708,11 +708,24 @@
          */
         _funcCall: function(field, rules, i, options) {
             var functionName = rules[i + 1];
-            var fn = window[functionName];
+            var fn = methods._getFunctionByName(functionName);
             if (typeof(fn) == 'function')
                 return fn(field, rules, i, options);
 
         },
+        /**
+         * Return function from its name. Capable of handling functions with namespaces
+         * @param {String} functionName
+         */
+        _getFunctionByName: function(functionName) {
+    	  var namespaces = functionName.split(".");
+    	  var func = namespaces.pop();
+    	  var context = window;
+    	  for(var i = 0; i < namespaces.length; i++) {
+    	    context = context[namespaces[i]];
+    	  }
+    	  return context[func];
+		},
         /**
          * Field match
          *
